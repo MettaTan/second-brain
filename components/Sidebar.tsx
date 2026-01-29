@@ -178,7 +178,7 @@ export default function Sidebar({
                           {thread.title || 'Untitled conversation'}
                         </p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {formatDate(thread.created_at)}
+                          {thread.created_at ? formatDate(thread.created_at) : ''}
                         </p>
                       </div>
                     </div>
