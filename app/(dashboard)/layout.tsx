@@ -6,7 +6,7 @@
 import { createClient } from '@/lib/supabase-server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut } from 'lucide-react';
+import { LogOut, BarChart3 } from 'lucide-react';
 
 export default async function DashboardLayout({
   children,
@@ -34,6 +34,13 @@ export default async function DashboardLayout({
           </Link>
 
           <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard/analytics"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </Link>
             <span className="text-sm text-muted-foreground">
               {user.email}
             </span>

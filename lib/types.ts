@@ -94,3 +94,21 @@ export interface ChatResponse {
 export interface BotListResponse {
   bots: Bot[];
 }
+
+// Admin Types
+export interface BotStats {
+  botId: string;
+  totalMessages: number;
+  uniqueStudents: number;
+  totalThreads: number;
+  lastActiveAt: string | null;
+}
+
+export interface ConversationSummary {
+  threadId: string;
+  sessionId: string;
+  messageCount: number;
+  firstMessage: string;
+  lastMessageAt: string;
+  createdAt: string;
+}

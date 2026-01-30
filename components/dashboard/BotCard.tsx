@@ -8,7 +8,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Calendar, MessageSquare, MoreVertical, Edit, Trash2, Pencil } from 'lucide-react';
+import { Calendar, MessageSquare, MoreVertical, Edit, Trash2, Pencil, MessagesSquare, Copy } from 'lucide-react';
 import { Bot } from '@/lib/types';
 import ShareLinkSection from '@/components/dashboard/ShareLinkSection';
 
@@ -25,6 +25,7 @@ export default function BotCard({ bot, onDelete }: BotCardProps) {
   const [newName, setNewName] = useState(bot.name);
   const [isRenaming, setIsRenaming] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState(false);
 
   const handleRename = async () => {
     if (!newName.trim() || newName === bot.name) {
@@ -83,9 +84,31 @@ export default function BotCard({ bot, onDelete }: BotCardProps) {
     }
   };
 
+  const handleDuplicate = async () => {
+    setIsDuplicating(true);
+    setShowMenu(false);
+    try {
+      const response = await fetch(`/api/admin/bots/${bot.id}/duplicate`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        router.refresh();
+      } else {
+        const data = await response.json();
+        alert(`Failed to duplicate bot: ${data.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Duplicate error:', error);
+      alert('Failed to duplicate bot. Please try again.');
+    } finally {
+      setIsDuplicating(false);
+    }
+  };
+
   return (
     <>
-      <div className="bg-surface border border-border rounded-lg p-6 hover:border-primary transition-colors relative">
+      <div className={`bg-surface border border-border rounded-lg p-6 hover:border-primary transition-colors relative ${isDuplicating ? 'opacity-60 pointer-events-none' : ''}`}>
         {/* More Options Button */}
         <button
           onClick={() => setShowMenu(!showMenu)}
@@ -123,6 +146,21 @@ export default function BotCard({ bot, onDelete }: BotCardProps) {
                 <Edit className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm">Edit Curriculum</span>
               </Link>
+              <Link
+                href={`/bot/${bot.id}/conversations`}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-background transition-colors text-left"
+                onClick={() => setShowMenu(false)}
+              >
+                <MessagesSquare className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">View Conversations</span>
+              </Link>
+              <button
+                onClick={handleDuplicate}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-background transition-colors text-left"
+              >
+                <Copy className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">Duplicate</span>
+              </button>
               <button
                 onClick={() => {
                   setShowDeleteConfirm(true);
