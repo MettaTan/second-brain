@@ -16,15 +16,18 @@ interface BotEditClientProps {
   botId: string;
   botName: string;
   initialCurriculum: CourseSection[];
+  initialPassword?: string;
 }
 
 export default function BotEditClient({
   botId,
   botName,
   initialCurriculum,
+  initialPassword,
 }: BotEditClientProps) {
   const router = useRouter();
   const [curriculum, setCurriculum] = useState<CourseSection[]>(initialCurriculum);
+  const [password, setPassword] = useState(initialPassword || '');
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
@@ -37,6 +40,7 @@ export default function BotEditClient({
         },
         body: JSON.stringify({
           course_map: curriculum,
+          password: password.trim() || null,
         }),
       });
 
@@ -93,11 +97,32 @@ export default function BotEditClient({
         />
       </div>
 
+      {/* Password Protection */}
+      <div className="mt-6 bg-surface border border-border rounded-lg p-6">
+        <label htmlFor="editPassword" className="block text-lg font-semibold mb-2">
+          Password Protection
+          <span className="ml-2 text-xs font-normal text-muted-foreground">
+            Optional
+          </span>
+        </label>
+        <p className="text-sm text-muted-foreground mb-4">
+          Set a password to restrict student access. Leave empty for public access.
+        </p>
+        <input
+          id="editPassword"
+          type="text"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:border-primary transition-colors"
+          placeholder="Leave empty for public access"
+        />
+      </div>
+
       {/* Info Box */}
       <div className="mt-6 p-4 bg-background border border-border rounded-lg">
         <p className="text-sm text-muted-foreground">
-          <strong>Note:</strong> You can reorganize phases, add new items, and edit existing ones. 
-          Changes will be saved when you click "Save Changes". File uploads are not available in edit mode.
+          <strong>Note:</strong> You can reorganize phases, add new items, and edit existing ones.
+          Changes will be saved when you click &quot;Save Changes&quot;. File uploads are not available in edit mode.
         </p>
       </div>
     </div>

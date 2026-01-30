@@ -54,6 +54,7 @@ export async function createBotAction(formData: FormData) {
     const systemInstructions = formData.get('systemInstructions') as string;
     const curriculumJson = formData.get('curriculum') as string;
     const files = formData.getAll('files') as File[];
+    const password = formData.get('password') as string | null;
     
     console.log('   - Bot name:', botName);
     console.log('   - Instructions length:', systemInstructions?.length || 0);
@@ -267,6 +268,7 @@ export async function createBotAction(formData: FormData) {
         assistant_id: assistantId,
         system_prompt: systemInstructions || null,
         course_map: courseMap,
+        password: password || null,
       })
       .select()
       .single();

@@ -18,6 +18,7 @@ export interface Bot {
   assistant_id: string; // OpenAI Assistant ID
   system_prompt?: string; // Custom instructions for this bot
   course_map: CourseModule[] | CourseMap; // JSONB array (supports both flat and hierarchical)
+  password?: string; // Optional password protection
   created_at?: string;
 }
 

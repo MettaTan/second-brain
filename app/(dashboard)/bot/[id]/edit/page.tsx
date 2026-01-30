@@ -84,6 +84,7 @@ export default async function BotEditPage({
       botId={botData.id}
       botName={botData.name}
       initialCurriculum={initialCurriculum}
+      initialPassword={botData.password || ''}
     />
   );
 }

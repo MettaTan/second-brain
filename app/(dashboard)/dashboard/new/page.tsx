@@ -47,6 +47,7 @@ export default function CreateBotPage() {
   const [systemInstructions, setSystemInstructions] = useState(DEFAULT_SYSTEM_PROMPT);
   const [files, setFiles] = useState<File[]>([]);
   const [curriculum, setCurriculum] = useState<CourseSection[]>([]);
+  const [password, setPassword] = useState('');
 
   // Handle just-in-time file upload from curriculum builder
   const handleDirectUpload = async (newFile: File): Promise<string> => {
@@ -99,6 +100,9 @@ export default function CreateBotPage() {
       formData.append('botName', botName);
       formData.append('systemInstructions', systemInstructions);
       formData.append('curriculum', JSON.stringify(curriculum));
+      if (password.trim()) {
+        formData.append('password', password.trim());
+      }
       
       files.forEach((file, index) => {
         console.log(`   - Adding file ${index + 1}:`, file.name, `(${(file.size / 1024 / 1024).toFixed(2)} MB)`);
@@ -298,6 +302,28 @@ export default function CreateBotPage() {
               </label>
             </div>
           )}
+        </div>
+
+        {/* Password Protection (Optional) */}
+        <div className="bg-surface border border-border rounded-lg p-6">
+          <label htmlFor="password" className="block text-lg font-semibold mb-2">
+            Password Protection
+            <span className="ml-2 text-xs font-normal text-muted-foreground bg-surface px-2 py-1 rounded border border-border">
+              Optional
+            </span>
+          </label>
+          <p className="text-sm text-muted-foreground mb-4">
+            Set a password to restrict access. Students will need to enter it before viewing the course.
+          </p>
+          <input
+            id="password"
+            type="text"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:border-primary transition-colors"
+            placeholder="Leave empty for public access"
+            disabled={isLoading}
+          />
         </div>
 
         {/* Error Message */}

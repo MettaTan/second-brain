@@ -157,7 +157,7 @@ export async function PATCH(
 
     // Parse request body
     const body = await req.json();
-    const { name, course_map } = body;
+    const { name, course_map, password } = body;
 
     // Build update object (only include fields that are provided)
     const updates: any = {};
@@ -166,6 +166,10 @@ export async function PATCH(
     }
     if (course_map !== undefined) {
       updates.course_map = course_map;
+    }
+    if (password !== undefined) {
+      // Allow setting to null to remove password
+      updates.password = password || null;
     }
 
     if (Object.keys(updates).length === 0) {

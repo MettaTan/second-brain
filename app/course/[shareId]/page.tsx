@@ -13,6 +13,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { Bot } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import StudentCourseClient from '@/components/StudentCourseClient';
+import PasswordGate from '@/components/PasswordGate';
 
 export default async function StudentCoursePage({
   params,
@@ -31,7 +32,7 @@ export default async function StudentCoursePage({
   // If using Service Role Key (supabaseAdmin), RLS is bypassed
   const { data: bot, error } = await supabase
     .from('bots')
-    .select('id, name, assistant_id, course_map')
+    .select('id, name, assistant_id, course_map, password')
     .eq('id', shareId)
     .single();
 
@@ -97,14 +98,7 @@ export default async function StudentCoursePage({
 
   const botData = bot as Bot;
 
-  console.log('✅ Student view loaded successfully:', {
-    id: botData.id,
-    name: botData.name,
-    hasCourseMap: !!botData.course_map,
-    courseMapLength: botData.course_map?.length || 0,
-  });
-
-  return (
+  const content = (
     <StudentCourseClient
       botId={botData.id}
       assistantId={botData.assistant_id}
@@ -112,5 +106,15 @@ export default async function StudentCoursePage({
       courseMap={botData.course_map || []}
     />
   );
+
+  if (botData.password) {
+    return (
+      <PasswordGate botId={botData.id} botName={botData.name}>
+        {content}
+      </PasswordGate>
+    );
+  }
+
+  return content;
 }
 
